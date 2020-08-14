@@ -2,6 +2,7 @@ const router = require('express').Router()
   , fs = require('fs')
   , multer = require('multer')
   , Vendor = require('../../models/vendor')
+  , config = require('../../config')
   , WebSite = require('../../models/website');
 
 router.get('/', (req, res, next) => {
@@ -27,7 +28,7 @@ router.post('/edit', (req, res, next) => {
   }
   else {
     if (site.origin_name) {
-      fs.renameSync(`./public/resource/${site.origin_name}/`, `./public/resource/${site.name}/`)
+      fs.renameSync(`${config.PATH.rsc_bin}${site.origin_name}`, `${config.PATH.rsc_bin}${site.name}`)
     }
     WebSite.findOneAndUpdate({ _id: site._id }, { name: site.name, valid: site.valid }, { new: true })
       .exec((e, data) => {
@@ -39,18 +40,24 @@ router.post('/edit', (req, res, next) => {
 
 router.post('/del', (req, res, next) => {
   const { _id } = req.query
-  console.log(_id)
-  WebSite.deleteOne({ _id })
+  WebSite.findByIdAndRemove({ _id })
     .exec((e, d) => {
       if (e) return next(e)
-      res.json(d)
+      fs.rmdir(`${config.PATH.rsc_bin}${d.name}`, { recursive: true }, e => {
+        if (e) {
+          res.json(e)
+        }
+        else {
+          res.json(d)
+        }
+      })
     })
-  Vendor.updateMany({sites: _id}, {$pull: {sites: _id}}).exec()
+  Vendor.updateMany({ sites: _id }, { $pull: { sites: _id } }).exec()
 });
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    var path = `./public/resource/${req.body.name}/`
+    var path = `${config.PATH.rsc_bin}${req.body.name}/`
 
     if (file.fieldname === "bin") {
       path += parseFloat(req.body.ver).toFixed(1)

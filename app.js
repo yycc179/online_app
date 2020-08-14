@@ -19,14 +19,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/githook', require('./routes/server/hook.js'))
 
+console.log(process.env['SRV_TYPE'])
+
 if(process.env['SRV_TYPE'] == 'all') {
+
+    app.use('/api', require('./routes/server'));
+    app.use('/adm', require('./routes/client'));
 
     app.use(compression({filter: function(req, res){
         return /\w\.bin$/i.test(req.url)
     }}))
     app.use(express.static('public'))
-    app.use('/api', require('./routes/server'));
-    app.use('/adm', require('./routes/client'));
+    app.use(express.static( require('./config').PATH.upload))
+
 }
 
 // catch 404 and forward to error handler

@@ -6,8 +6,10 @@ exports = module.exports = {
     sesion_ttl: 7 * 24 * 3600,   //7 days
     hash_slat: process.env['HASH_SALT_WEB'] || 'hash_salt',
     PATH: {
-        cert: '/src/share/cert/cert.pem',
-        priv: '/src/share/cert/privkey.pem',
-        api_key: '/src/share/keylist/',
+        cert: '/src/data/cert/cert.pem',
+        priv: '/src/data/cert/privkey.pem',
+        upload: '/src/data/upload',
+        rsc_bin: '/src/data/upload/resource/',
+        api_key: '/src/data/upload/apikeys/',
     }
 }
