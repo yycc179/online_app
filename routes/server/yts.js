@@ -4,11 +4,14 @@ const router = require('express').Router()
   , net = require('net');
 
 router.get('/', (req, res, next) => {
-  const { s, js } = req.query
+  const { s, js, h } = req.query
 
   var a = 'ver'
 
   if (s && js) {
+    if (sha1(s + js + process.env['HASH_SALT_YTS']) != h) {
+      return res.status(403).send('verify err!\n')
+    }
     a = s + ' ' + js
   }
 
