@@ -10,6 +10,6 @@ exports = module.exports = {
         priv: '/src/data/cert/privkey.pem',
         upload: '/src/data/upload',
         rsc_bin: '/src/data/upload/resource/',
-        api_key: '/src/data/upload/apikeys/',
+        api_key: '/src/data/apikeys/',
     }
 }

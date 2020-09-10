@@ -3,22 +3,24 @@ const router = require('express').Router()
   , { exec } = require('child_process');
 
 
-function verify_signature(req, res, next) {
-  var up_all = req.url.indexOf('web') > 0;
-  req.up_param = up_all ? 'web' : 'yts'
+  function verify_signature(req, res, next) {
+    const { p } = req.query;
+    const salt = (p == 'web' ? process.env['HOOK_SECRET_WEB'] : process.env['HOOK_SECRET_YTS']) || 'none'
 
-  const x_s = req.headers['x-hub-signature']
-  const s = 'sha1=' + hmac('sha1', up_all ? process.env['HOOK_SECRET_WEB'] : process.env['HOOK_SECRET_YTS']
-    , JSON.stringify(req.body), 'hex')
+    req.up_param = p;
 
-  if (s == x_s) {
-    return next()
-  }
-  res.send('verify error')
+    const x_s = req.headers['x-hub-signature']
+    const s = 'sha1=' + hmac('sha1', salt, JSON.stringify(req.body), 'hex')
+
+    if (s == x_s) {
+        return next()
+    }
+    res.json({ err: 1, p, x_s, salt })
 }
 
+
 function do_update(req, res, next) {
-  exec(`update ${req.up_param} ${req.body.after}`,  (error, stdout) => {
+  exec(`update ${req.up_param} ${req.body.after}`, (error, stdout) => {
     if (error) {
       res.send(error)
       return child.kill()
@@ -29,8 +31,6 @@ function do_update(req, res, next) {
 
 }
 
-router.post('/web', verify_signature, do_update);
-
-router.post('/yts', verify_signature, do_update);
+router.post('/', verify_signature, do_update);
 
 module.exports = router;
