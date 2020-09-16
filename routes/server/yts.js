@@ -1,6 +1,7 @@
 const router = require('express').Router()
   , config = require('../../config')
   , fs = require('fs')
+  , { sha1 } = require('utility')
   , net = require('net');
 
 router.get('/', (req, res, next) => {
