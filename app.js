@@ -21,16 +21,18 @@ app.use('/githook', require('./routes/server/hook.js'))
 
 console.log(process.env['SRV_TYPE'])
 
-if(process.env['SRV_TYPE'] == 'all') {
+if (process.env['SRV_TYPE'] == 'all' || app.get('env') !== 'production') {
 
     app.use('/api', require('./routes/server'));
     app.use('/adm', require('./routes/client'));
 
-    app.use(compression({filter: function(req, res){
-        return /\w\.bin$/i.test(req.url)
-    }}))
+    app.use(compression({
+        filter: function (req, res) {
+            return /\w\.bin$/i.test(req.url)
+        }
+    }))
     app.use(express.static('public'))
-    app.use(express.static( require('./config').PATH.upload))
+    app.use(express.static(require('./config').PATH.upload))
 
 }
 
@@ -41,7 +43,7 @@ app.use(function (req, res, next) {
     next(err);
 })
 
-if (app.get('env') === 'development') {
+if (app.get('env') !== 'production') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500).json({
             message: err.message,

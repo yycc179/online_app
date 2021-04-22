@@ -5,10 +5,11 @@ const router = require('express').Router()
 
 
 router.use(require('cookie-parser')());
-//router.use(session({ secret: config.session_secret, resave: true, 
-//	saveUninitialized: true, cookie: { maxAge: config.cookie_age } }));
 
-router.use(session({ secret: config.session_secret, resave: true}))
+router.use(session({
+    secret: config.session_secret, resave: true,
+    cookie: { maxAge: config.cookie_age }
+}))
 router.use(passport.initialize());
 router.use(passport.session());
 
@@ -17,6 +18,7 @@ router.use(passport.session());
 router.use('/', require('./auth'));
 router.use('/site', require('./site'));
 router.use('/vendor', require('./vendor'));
+router.use('/pic', require('./picture'));
 
 // if (process.env.NODE_ENV == 'production') {
 //     router.use(function (req, res, next) {

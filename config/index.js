@@ -11,5 +11,6 @@ exports = module.exports = {
         upload: '/src/data/upload',
         rsc_bin: '/src/data/upload/resource/',
         api_key: '/src/data/apikeys/',
+	    picture: '/src/data/upload/picture',
     }
 }
