@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/githook', require('./routes/server/hook.js'))
+app.use('/resource', require('./routes/server/resource.js'))
 
 console.log(process.env['SRV_TYPE'])
 

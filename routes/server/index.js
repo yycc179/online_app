@@ -37,6 +37,8 @@ router.get('/pic', (req, res) => {
 
 })
 
+router.use('/device', require('./device'));
+
 router.use(function (err, req, res, next) {
   if (!err) {
     var err = new Error('invalid request');
