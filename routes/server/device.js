@@ -37,6 +37,7 @@ router.get('/', utils.getClientIp, (req, res) => {
 
 router.get('/info', utils.getClientIp, (req, res) => {
     const { ip = req.ip } = req.query;
+    res.setHeader('Access-Control-Allow-Origin', '*')
 
     Devinfo.findOne({ ip })
         .exec((e, dev) => {

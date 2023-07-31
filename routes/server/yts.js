@@ -34,6 +34,8 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/keylist', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+
   fs.readdir(config.PATH.api_key, (err, files) => {
     if (files && files.length) {
       id = Math.floor(Math.random() * files.length);
